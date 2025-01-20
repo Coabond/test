@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Log an Email - LOS</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f4;
+      padding: 20px;
+    }
+
+    .email-container {
+      max-width: 800px;
+      margin: 0 auto;
+      background-color: #fff;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .email-header {
+      font-size: 24px;
+      font-weight: bold;
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .btn {
+      padding: 10px 20px;
+      border: none;
+      cursor: pointer;
+      border-radius: 4px;
+      font-size: 16px;
+    }
+
+    .btn-primary {
+      background-color: #007bff;
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background-color: #0056b3;
+    }
+
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.5);
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+    }
+
+    .modal-content {
+      background-color: #fff;
+      padding: 20px;
+      border-radius: 8px;
+      width: 500px;
+      max-height: 80vh;
+      overflow-y: auto;
+      position: relative;
+    }
+
+    .modal-header {
+      font-size: 20px;
+      font-weight: bold;
+      margin-bottom: 10px;
+      text-align: center;
+    }
+
+    .form-group {
+      margin-bottom: 15px;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 14px;
+      margin-bottom: 5px;
+    }
+
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+      width: 100%;
+      padding: 8px;
+      font-size: 14px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+
+    .form-group textarea {
+      resize: none;
+      height: 100px;
+    }
+
+    .modal-footer {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+    }
+
+    .btn-close {
+      background-color: #ccc;
+      color: black;
+    }
+
+    .btn-close:hover {
+      background-color: #999;
+    }
+
+    /* Optional scroll bar appearance */
+    .modal-content::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    .modal-content::-webkit-scrollbar-thumb {
+      background-color: #ccc;
+      border-radius: 4px;
+    }
+
+    .modal-content::-webkit-scrollbar-thumb:hover {
+      background-color: #999;
+    }
+  </style>
+</head>
+<body>
+
+<div class="email-container">
+  <div class="email-header">Requests - Activity</div>
+  <button class="btn btn-primary" onclick="openModal()">Log an Email</button>
+</div>
+
+<!-- Modal -->
+<div class="modal" id="logEmailModal">
+  <div class="modal-content">
+    <div class="modal-header">Log an Email</div>
+    <form id="emailForm">
+      <div class="form-group">
+        <label for="to">To</label>
+        <select id="to" required>
+          <option value="">Select Contact</option>
+          <option value="email1@example.com">email1@example.com</option>
+          <option value="email2@example.com">email2@example.com</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="from">From</label>
+        <select id="from" required>
+          <option value="">Select Account</option>
+          <option value="user1@outlook.com">user1@outlook.com</option>
+          <option value="user2@gmail.com">user2@gmail.com</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="emailType">Email Type</label>
+        <select id="emailType" required>
+          <option value="">Select Type</option>
+          <option value="Appointment Scheduling">Appointment Scheduling</option>
+          <option value="Follow-Up">Follow-Up</option>
+          <option value="Inquiry">Inquiry</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="emailStatus">Email Status</label>
+        <select id="emailStatus" required>
+          <option value="">Select Status</option>
+          <option value="Scheduled">Scheduled</option>
+          <option value="Completed">Completed</option>
+          <option value="Draft">Draft</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="emailDate">Email Date</label>
+        <input type="date" id="emailDate" required>
+      </div>
+      <div class="form-group">
+        <label for="emailTime">Email Time</label>
+        <input type="time" id="emailTime" required>
+      </div>
+      <div class="form-group">
+        <label for="emailDirection">Email Direction</label>
+        <select id="emailDirection" required>
+          <option value="">Select Direction</option>
+          <option value="Inbound">Inbound</option>
+          <option value="Outbound">Outbound</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="emailOutcome">Email Outcome</label>
+        <select id="emailOutcome" required>
+          <option value="">Select Outcome</option>
+          <option value="Successful">Successful</option>
+          <option value="Failed">Failed</option>
+          <option value="Pending">Pending</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="subject">Subject</label>
+        <input type="text" id="subject" maxlength="3000" placeholder="Enter the subject">
+      </div>
+      <div class="form-group">
+        <label for="body">Body</label>
+        <textarea id="body" placeholder="Enter email body"></textarea>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-close" onclick="closeModal()">Cancel</button>
+        <button type="button" class="btn btn-primary" onclick="saveEmail()">Save</button>
+        <button type="submit" class="btn btn-primary">Send</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script>
+  const modal = document.getElementById("logEmailModal");
+
+  function openModal() {
+    modal.style.display = "flex";
+  }
+
+  function closeModal() {
+    modal.style.display = "none";
+  }
+
+  function saveEmail() {
+    alert("Email activity saved as draft.");
+    closeModal();
+  }
+
+  document.getElementById("emailForm").addEventListener("submit", function (event) {
+    event.preventDefault();
+    alert("Email sent successfully!");
+    closeModal();
+  });
+</script>
+
+</body>
+</html>
